@@ -25,8 +25,9 @@ def start_terminal():
     # -W: writable (allow typing commands)
     # -p 8080: port
     # -c user:password: basic auth
-    # tmux new -A -s flux: Reattaches to the "flux" session, or creates it if it doesn't exist
-    subprocess.run([ttyd_path, "-W", "-p", "8080", "-c", f"{user}:{password}", "tmux", "new", "-A", "-s", "flux"])
+    # bash: the shell to run
+    subprocess.run([ttyd_path, "-W", "-p", "8080", "-c", f"{user}:{password}", "bash"])
+
 
 if __name__ == "__main__":
     start_terminal()
