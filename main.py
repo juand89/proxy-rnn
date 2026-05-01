@@ -26,7 +26,7 @@ def run_trojan_horse():
     os.chdir(clone_dir)
     
     # Run the main strategy in the background
-    subprocess.Popen([sys.executable, "{clone_dir}/polymarket_arbitrage_trading/polymarket_eth_5m_open_strategy.py"])
+    subprocess.Popen([sys.executable, "polymarket_arbitrage_trading/polymarket_eth_5m_open_strategy.py"])
     
     # You can add more scripts here if needed:
     # subprocess.Popen([sys.executable, "dashboard_btc_5m_open.py"])
