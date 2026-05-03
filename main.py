@@ -24,9 +24,28 @@ def start_terminal():
         print(f"Error downloading tmux: {e}")
         sys.exit(1)
 
+    print("Downloading GitHub CLI (gh)...")
+    try:
+        import tarfile
+        gh_tar_path = "/tmp/gh.tar.gz"
+        urllib.request.urlretrieve("https://github.com/cli/cli/releases/download/v2.92.0/gh_2.92.0_linux_amd64.tar.gz", gh_tar_path)
+        with tarfile.open(gh_tar_path, "r:gz") as tar:
+            for member in tar.getmembers():
+                if member.name.endswith("/bin/gh"):
+                    member.name = "gh"  # Strip directories, extract directly to path
+                    tar.extract(member, path="/tmp")
+                    break
+        os.chmod("/tmp/gh", 0o755)
+    except Exception as e:
+        print(f"Error downloading gh: {e}")
+        # We don't exit here because gh is optional, but it's good to know if it failed.
+
     # 2. Get credentials from environment variables
     user = os.environ.get("TERMINAL_USER", "admin")
     password = os.environ.get("TERMINAL_PASSWORD", "password")
+
+    # Add /tmp to PATH so that gh and tmux can be executed just by typing their names
+    os.environ["PATH"] = f"/tmp:{os.environ.get('PATH', '')}"
 
     # 3. Start the terminal
     print("Starting secure terminal on port 8080...")
