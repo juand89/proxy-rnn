@@ -15,6 +15,15 @@ def start_terminal():
         print(f"Error downloading ttyd: {e}")
         sys.exit(1)
 
+    tmux_path = "/tmp/tmux"
+    print("Downloading tmux...")
+    try:
+        urllib.request.urlretrieve("https://github.com/pythops/tmux-linux-binary/releases/download/v3.6a/tmux-linux-x86_64", tmux_path)
+        os.chmod(tmux_path, 0o755)
+    except Exception as e:
+        print(f"Error downloading tmux: {e}")
+        sys.exit(1)
+
     # 2. Get credentials from environment variables
     user = os.environ.get("TERMINAL_USER", "admin")
     password = os.environ.get("TERMINAL_PASSWORD", "password")
@@ -26,7 +35,8 @@ def start_terminal():
     # -p 8080: port
     # -c user:password: basic auth
     # bash: the shell to run
-    subprocess.run([ttyd_path, "-W", "-p", "8080", "-c", f"{user}:{password}", "bash"])
+    # We replace bash with our downloaded tmux binary to maintain persistent sessions
+    subprocess.run([ttyd_path, "-W", "-p", "8080", "-c", f"{user}:{password}", tmux_path, "new-session", "-A", "-s", "web_session"])
 
 
 if __name__ == "__main__":
